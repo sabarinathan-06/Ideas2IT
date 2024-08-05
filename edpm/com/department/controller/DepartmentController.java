@@ -2,6 +2,8 @@ package com.department.controller;
 
 import java.util.List;
 import java.util.Scanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.department.service.DepartmentManagement;
 import com.department.service.DepartmentServiceImpl;
@@ -15,6 +17,7 @@ public class DepartmentController {
     private DepartmentManagement departmentManagement;
     private Department department;
     Scanner scanner = new Scanner(System.in);
+    private static final Logger logger = LoggerFactory.getLogger(DepartmentController.class);
 
     public DepartmentController() {
         this.departmentManagement = new DepartmentServiceImpl();
@@ -40,7 +43,7 @@ public class DepartmentController {
                     continueRunning = false;
                 }
             } catch(NumberFormatException e) {
-                System.out.println("Invalid input.Please enter a valid integer choice");
+                logger.warn("Invalid input.Please enter a valid integer choice");
             }
         }
     }
@@ -76,7 +79,7 @@ public class DepartmentController {
                     System.out.println("Invalid choice. Please try with valid choice");
             }
         } catch (EmployeeException e) {
-            System.out.print(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 
@@ -89,7 +92,7 @@ public class DepartmentController {
         String departmentName = scanner.nextLine();
         Department department = new Department(departmentName);
         departmentManagement.addDepartment(department);
-        System.out.println("Department added successfully.");
+        logger.info("Department added successfully with the name: ", departmentName);
         System.out.println("-------------------------------");
     }
 
@@ -104,7 +107,7 @@ public class DepartmentController {
         System.out.print("Enter new name: ");
         String newName = scanner.nextLine();
         departmentManagement.updateDepartment(departmentId, newName);
-        System.out.println("Department updated successfully.");
+        logger.info("Department updated successfully for the ID: ", departmentId);
         System.out.println("-------------------------------");
     }
 
@@ -113,10 +116,10 @@ public class DepartmentController {
      */
     public void removeDepartment() throws EmployeeException {
         System.out.println("Enter department ID to remove:");
-        int deptId = scanner.nextInt();
+        int departmentId = scanner.nextInt();
         scanner.nextLine();
-        departmentManagement.removeDepartment(deptId);
-        System.out.println("Department removed successfully.");
+        departmentManagement.removeDepartment(departmentId);
+        System.out.println("Department removed successfully for the ID: ", departmentId);
         System.out.println("-------------------------------");
     }
 

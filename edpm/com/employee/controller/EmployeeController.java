@@ -3,6 +3,8 @@ package com.employee.controller;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.department.service.DepartmentManagement;
 import com.department.service.DepartmentServiceImpl;
@@ -23,6 +25,7 @@ public class EmployeeController {
     private EmployeeManagement employeeManagement;
     private Validation validator;
     Scanner scanner = new Scanner(System.in);
+    private static final Logger logger = LoggerFactory.getLogger(DepartmentController.class);
 
     public EmployeeController() {
         this.departmentManagement = new DepartmentServiceImpl();
@@ -79,7 +82,7 @@ public class EmployeeController {
                             updateEmployee(updateId);
                             break;
                         } catch(NumberFormatException e) {
-                            System.out.println("Invalid input.Please enter valid integer choice");
+                            logger.warn("Invalid input.Please enter valid integer choice");
                         }
                     }
                     break;
@@ -99,7 +102,7 @@ public class EmployeeController {
                     System.out.println("Invalid choice. Please try with valid choice");
             }
         } catch (EmployeeException e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 
@@ -149,10 +152,10 @@ equal to empty.
             employeeManagement.createEmployee(new Employee(employeeId, name, place, 
                                               dob.toString(), experience, salary, 
                                               department, isPresent));
-            System.out.println("Employee created.");
+            logger.info("Employee created with the name: ", name);
             System.out.println("-------------------------------");
         } else {
-            System.out.println("No department found!. First create the Department.");
+            logger.warn("No department found!. First create the Department.");
             System.out.println("-------------------------------");
         }
     }
@@ -166,7 +169,7 @@ equal to empty.
             choiceForUpdate();
             updateOperation(updateId);
         } else {
-            System.out.println("Employee with ID " + updateId + " not found.");
+            logger.info("Employee with ID " + updateId + " not found.");
         }
         System.out.println("-------------------------------");
     }
@@ -245,7 +248,7 @@ equal to empty.
                 scanner.nextLine();
                 employeeManagement.updateEmployee(updateId, null, null, null, 
                                                   -1, newDepartmentName);
-                System.out.println("Department updated successfully ");
+                logger.info("Department updated successfully for the ID: ", updateId);
                 break;
 
             default:
@@ -291,9 +294,9 @@ equal to empty.
         int removeId = scanner.nextInt();
         boolean isRemoved = employeeManagement.removeEmployee(removeId);
         if (isRemoved) {
-            System.out.println("Employee with ID " + removeId + " is deleted.");
+            logger.info("Employee with ID " + removeId + " is deleted.");
         } else {
-            System.out.println("Employee with ID " + removeId + " not found.");
+            logger.info("Employee with ID " + removeId + " not found.");
         }
         System.out.println("-------------------------------");
     }

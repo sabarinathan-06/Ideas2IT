@@ -3,6 +3,8 @@ package com.project.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.model.Employee;
 import com.employee.service.EmployeeManagement;
@@ -21,6 +23,7 @@ public class ProjectController {
     private ProjectService projectService;
     private EmployeeManagement employeeManagement;
     Scanner scanner = new Scanner(System.in);
+    private static final Logger logger = LoggerFactory.getLogger(DepartmentController.class);
 
     public ProjectController() {
         this.projectService = new ProjectServiceImpl();
@@ -49,7 +52,7 @@ public class ProjectController {
                     continueRunning = false;
                 }
             } catch(NumberFormatException e) {
-                System.out.println("Invalid input.Please enter a valid integer choice");
+                logger.warn("Invalid input.Please enter a valid integer choice");
             }
         }
     }
@@ -97,7 +100,7 @@ public class ProjectController {
                     System.out.println("Invalid choice. Please try with valid choice");
             }
         } catch (EmployeeException e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
         } 
     }
 
@@ -110,11 +113,11 @@ public class ProjectController {
         String projectName = scanner.nextLine();
         boolean ispresent = projectService.isValidProjectName(projectName);
         if (ispresent) {
-            System.out.println("Project has already been presented.");
+            logger.info("Project has already been presented.");
         } else {
             Project project = new Project(projectName);
             projectService.addProject(project);
-            System.out.println("Project added successfully.");
+            logger.info("Project added successfully with tha name: ", projectName);
         }
         System.out.println("-------------------------------");
     }
@@ -129,7 +132,7 @@ public class ProjectController {
         System.out.print("Enter new name: ");
         String newName = scanner.nextLine();
         projectService.updateProject(projectId, newName);
-        System.out.println("Project updated successfully.");
+        logger.info("Project updated successfully for the ID: ", projectId);
         System.out.println("-------------------------------");
     }
 
@@ -140,7 +143,7 @@ public class ProjectController {
         System.out.println("Enter project ID to remove:");
         int projectId = scanner.nextInt();
         projectService.removeProject(projectId);
-        System.out.println("Project removed successfully.");
+        logger.info("Project removed successfully with the ID: ", projectId);
         System.out.println("-------------------------------");
     }
 
@@ -176,7 +179,7 @@ public class ProjectController {
             }
         System.out.println("--------------------------------");
         } else {
-            System.out.println("Project not found.");
+            logger.error("Project not found.");
         }
     }
 
@@ -193,9 +196,10 @@ public class ProjectController {
         Employee employee = employeeManagement.getEmployeeById(employeeId);
         if (project != null && employee != null) {
             projectService.addEmployeeToProject(employeeId, projectId);
-            System.out.println("Employee added to project successfully.");
+            logger.info("Employee added to project successfully for the project ID: " + projectId 
+                        + "and for the employee ID: " + employeeId);
         } else {
-            System.out.println("Project or Employee not found.");
+            logger.error("Project or Employee not found.");
         }
     }
 
@@ -212,9 +216,10 @@ public class ProjectController {
         Employee employee = employeeManagement.getEmployeeById(employeeId);
         if (project != null && employee != null) {
             projectService.removeEmployeeFromProject(employeeId, projectId);
-            System.out.println("Employee removed from project successfully.");
+            logger.info("Employee removed from project successfully with the project ID: " + projectId 
+                        + "and for the employee ID: " + employeeId);
         } else {
-            System.out.println("Project or Employee not found.");
+            logger.error("Project or Employee not found.");
         }
     }
 }
